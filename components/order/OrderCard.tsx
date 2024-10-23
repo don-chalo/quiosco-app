@@ -1,12 +1,19 @@
 import { completeOrder } from "@/actions/complete-order-action";
 import { OrderWithProducts } from "@/src/types";
 import { formatCurrency } from "@/src/utils";
+import { toast } from "react-toastify";
 
 type OrderCardProps = {
-    order: OrderWithProducts
+    order: OrderWithProducts,
+    onCompleted: (orderId: number) => void
 };
 
-export default function OrderCard({ order }: OrderCardProps) {
+export default function OrderCard({ order, onCompleted }: OrderCardProps) {
+    const handleSubmit = async (formData: FormData) => {
+        await completeOrder(formData);
+        onCompleted(+(formData.get('order-id')?.toString() || 0));
+        toast.success("¡Orden completada con éxito!");
+    };
     return (
         <section
             aria-labelledby="summary-heading"
@@ -31,7 +38,7 @@ export default function OrderCard({ order }: OrderCardProps) {
                 </div>
             </dl>
 
-            <form action={completeOrder}>
+            <form action={handleSubmit}>
                 <input name="order-id" type="hidden" value={order.id} />
                 <input
                     className="bg-indigo-600 hover:bg-indigo-800 text-white w-full mt-5 p-3 uppercase font-bold cursor-pointer"

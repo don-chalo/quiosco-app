@@ -7,6 +7,9 @@ export async function GET() {
         where: {
             status: false
         },
+        orderBy: {
+            date: 'desc'
+        },
         include: {
             orderProducts: {
                 include: {
